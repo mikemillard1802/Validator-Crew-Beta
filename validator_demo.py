@@ -3,12 +3,14 @@ from crewai import Agent, Task, Crew, LLM
 from crewai.tools import tool
 from langchain_community.tools import DuckDuckGoSearchRun
 
-# Local Ollama LLM (fast on your HP)
 llm = LLM(
-    model="ollama/phi3:mini",    # Super fast
-    base_url="http://localhost:11434",
+    model="ollama/phi3:mini",
+    # Fetches from .toml locally or Cloud Settings when live
+    base_url=st.secrets["OLLAMA_BASE_URL"], 
+    api_key=st.secrets["HF_API_KEY"],
     temperature=0.1,
 )
+
 
 # Wrapped search tool
 @tool("DuckDuckGo Search")
