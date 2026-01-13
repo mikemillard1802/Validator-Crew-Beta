@@ -3,10 +3,10 @@ from crewai import Agent, Task, Crew, LLM
 from crewai.tools import tool
 from langchain_community.tools import DuckDuckGoSearchRun
 
-# Hugging Face LLM (free tier compatible model)
+# Groq LLM (free tier — fast, reliable, no local dependency)
 llm = LLM(
-    model="huggingface/HuggingFaceH4/zephyr-7b-beta",  # Free, high-quality, works reliably
-    api_key=st.secrets["HF_API_KEY"],
+    model="llama3-8b-8192",  # Fast & high-quality (free tier)
+    api_key=st.secrets["GROQ_API_KEY"],
     temperature=0.1,
 )
 
