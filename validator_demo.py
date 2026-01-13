@@ -5,7 +5,7 @@ from langchain_community.tools import DuckDuckGoSearchRun
 
 # Hugging Face LLM (free inference API — uses your secret key)
 llm = LLM(
-    model="mistralai/Mistral-7B-Instruct-v0.3",  # Fast, free, high-quality open model
+    model="mistralai/Mistral-7B-Instruct-v0.3",  # Fast, high-quality open model (free tier)
     api_key=st.secrets["HF_API_KEY"],           # Pulls from Streamlit secrets
     temperature=0.1,
 )
