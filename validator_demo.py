@@ -3,9 +3,9 @@ from crewai import Agent, Task, Crew, LLM
 from crewai.tools import tool
 from langchain_community.tools import DuckDuckGoSearchRun
 
-# Hugging Face Inference API LLM (free tier — works on public deploy)
+# Hugging Face LLM (free tier compatible model)
 llm = LLM(
-    model="huggingface/mistralai/Mistral-7B-Instruct-v0.3",  # Fast, high-quality, free
+    model="huggingface/HuggingFaceH4/zephyr-7b-beta",  # Free, high-quality, works reliably
     api_key=st.secrets["HF_API_KEY"],
     temperature=0.1,
 )
