@@ -3,20 +3,20 @@ from crewai import Agent, Task, Crew, LLM
 from crewai.tools import tool
 from langchain_community.tools import DuckDuckGoSearchRun
 
-# Hugging Face LLM (free inference API — uses your secret key)
+# Hugging Face Inference API LLM (free tier — works on public deploy)
 llm = LLM(
-    model="mistralai/Mistral-7B-Instruct-v0.3",  # Fast, high-quality open model (free tier)
-    api_key=st.secrets["HF_API_KEY"],           # Pulls from Streamlit secrets
+    model="huggingface/mistralai/Mistral-7B-Instruct-v0.3",  # Fast, high-quality, free
+    api_key=st.secrets["HF_API_KEY"],
     temperature=0.1,
 )
 
-# Wrapped search tool (unchanged — works fine)
+# Wrapped search tool
 @tool("DuckDuckGo Search")
 def duckduckgo_search(query: str) -> str:
     """Search the web for real-time signals."""
     return DuckDuckGoSearchRun().run(query)
 
-# Agents (keep your tighter backstories — good for on-topic output)
+# Agents
 researcher = Agent(
     role="Signal Scanner",
     goal="Find 10-15 real 2026 quotes/signals for the idea",
@@ -83,7 +83,7 @@ if st.button("Validate Idea"):
             mime="text/markdown"
         )
     else:
-        st.warning("Please enter an idea.")
+        st.warning("Please enter an idea to validate.")
 
 st.write("Beta by Mike Millard — AI Strategist & Team Enablement Coach")
 st.write("Building in public at The Future of Work Chronicles")
