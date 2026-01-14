@@ -74,7 +74,7 @@ if st.button("Validate Idea"):
             # If using planning, you MUST specify the planning_llm,
             # planning=True, 
             # planning_llm=your_groq_llm, 
-            memory=False  # Disable memory if you don't have an embedder set up
+            memory=False,  # Disable memory if you don't have an embedder set up
             verbose=False),
             result = crew.kickoff()
 
