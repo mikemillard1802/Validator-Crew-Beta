@@ -1,4 +1,8 @@
+import os
 import streamlit as st
+
+# Force the environment variable for the LiteLLM engine
+os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
 from crewai import Agent, Task, Crew, LLM
 from crewai.tools import tool
 from langchain_community.tools import DuckDuckGoSearchRun
@@ -70,13 +74,14 @@ if st.button("Validate Idea"):
                 context=[task2]
             )
 
-            crew = Crew(agents=[researcher, analyst, writer], tasks=[task1, task2, task3], 
-            # If using planning, you MUST specify the planning_llm,
-            # planning=True, 
-            # planning_llm=your_groq_llm, 
-            memory=False,  # Disable memory if you don't have an embedder set up
-            verbose=False)
-            result = crew.kickoff()
+            crew = Crew(agents=[researcher, analyst, writer],
+                        tasks=[task1, task2, task3], 
+                        # If using planning, you MUST specify the planning_llm,
+                        # planning=True, 
+                        # planning_llm=your_groq_llm, 
+                        memory=False,  # Disable memory if you don't have an embedder set up
+                        verbose=False)
+                        result = crew.kickoff()
             st.success("Validation Complete!")
             st.markdown(result)  
             st.download_button(
