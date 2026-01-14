@@ -38,6 +38,8 @@ if 'validation_count' not in st.session_state:
     st.session_state.validation_count = 0
 
 # Three-tier LLM fallback system
+# Replace the get_llm_with_fallback function with this improved version:
+
 def get_llm_with_fallback():
     """Try providers in order: Groq → OpenRouter → Hugging Face"""
     
@@ -46,19 +48,38 @@ def get_llm_with_fallback():
             "name": "Groq (Fast)",
             "model": "groq/llama-3.1-8b-instant",
             "api_key_name": "GROQ_API_KEY",
-            "priority": 1
+            "priority": 1,
+            "params": {
+                "temperature": 0.3,  # Increased from 0.1 - allows more variety
+                "max_tokens": 2000,  # Set a reasonable limit
+                "top_p": 0.9,  # Nucleus sampling for better diversity
+                "frequency_penalty": 0.5,  # Penalize repetition
+                "presence_penalty": 0.3,  # Encourage new topics
+            }
         },
         {
             "name": "OpenRouter (Reliable)",
             "model": "openrouter/meta-llama/llama-3.1-8b-instruct:free",
             "api_key_name": "OPENROUTER_API_KEY",
-            "priority": 2
+            "priority": 2,
+            "params": {
+                "temperature": 0.3,
+                "max_tokens": 2000,
+                "top_p": 0.9,
+                "frequency_penalty": 0.5,
+                "presence_penalty": 0.3,
+            }
         },
         {
             "name": "Hugging Face (Backup)",
             "model": "huggingface/meta-llama/Meta-Llama-3.1-8B-Instruct",
             "api_key_name": "HUGGINGFACE_API_KEY",
-            "priority": 3
+            "priority": 3,
+            "params": {
+                "temperature": 0.3,
+                "max_tokens": 2000,
+                "top_p": 0.9,
+            }
         }
     ]
     
@@ -68,7 +89,7 @@ def get_llm_with_fallback():
                 llm = LLM(
                     model=provider["model"],
                     api_key=st.secrets[provider["api_key_name"]],
-                    temperature=0.1,
+                    **provider["params"]  # Unpack the parameters
                 )
                 return llm, provider["name"]
             except Exception as e:
