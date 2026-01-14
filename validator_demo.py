@@ -77,18 +77,16 @@ if st.button("Validate Idea"):
             memory=False,  # Disable memory if you don't have an embedder set up
             verbose=False),
             result = crew.kickoff(),
-
-        st.success("Validation Complete!")
-        st.markdown(result)
-        
-        st.download_button(
+            st.success("Validation Complete!")
+            st.markdown(result)  
+            st.download_button(
             label="Download Report",
             data=result,
             file_name="validator_report.md",
             mime="text/markdown"
-        )
+            )
     else:
-        st.warning("Please enter an idea to validate.")
+            st.warning("Please enter an idea to validate.")
 
 st.write("Beta by Mike Millard — AI Strategist & Team Enablement Coach")
 st.write("Building in public at The Future of Work Chronicles")
