@@ -8,6 +8,24 @@ import os
 import hashlib
 import time
 
+# Hide sidebar by default
+st.set_page_config(
+    page_title="AI Startup Validator",
+    page_icon="🚀",
+    initial_sidebar_state="collapsed",  # This hides the sidebar on load
+    layout="centered"
+)
+
+# Optional: Add custom CSS to style the sidebar toggle button
+st.markdown("""
+    <style>
+        /* Optional: Make sidebar toggle more visible */
+        [data-testid="collapsedControl"] {
+            color: #FF4B4B;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 # Set API keys from secrets
 for key in ["GROQ_API_KEY", "OPENROUTER_API_KEY", "HUGGINGFACE_API_KEY"]:
     if key in st.secrets:
@@ -144,6 +162,9 @@ with col1:
 with col2:
     st.info(f"📊 Session Validations: **{st.session_state.validation_count}/3**")
 
+# Add a hint about the sidebar
+st.caption("💡 Click the **>** arrow in the top-left to see usage stats and tips")
+
 idea = st.text_area(
     "Describe your AI/startup idea", 
     height=150, 
@@ -260,7 +281,7 @@ st.write("---")
 st.write("**Beta by Mike Millard** — AI Strategist & Team Enablement Coach")
 st.write("Building in public at The Future of Work Chronicles")
 
-# Sidebar
+# Sidebar (collapsed by default)
 with st.sidebar:
     st.markdown("### 📊 Your Beta Usage")
     st.markdown(f"**Validations Used**: {st.session_state.validation_count}/3")
