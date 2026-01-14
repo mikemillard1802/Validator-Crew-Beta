@@ -45,8 +45,8 @@ def get_llm_with_fallback():
     
     providers = [
     {
-        "name": "Groq Llama 70B",
-        "model": "groq/llama-3.1-70b-versatile",  # Larger, smarter model
+        "name": "Llama 3.3 70B",
+        "model": "groq/llama-3.3-70b-versatile",  # Updated 2026 Model ID
         "api_key_name": "GROQ_API_KEY",
         "priority": 1,
         "params": {
