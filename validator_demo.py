@@ -75,7 +75,7 @@ if st.button("Validate Idea"):
             # planning=True, 
             # planning_llm=your_groq_llm, 
             memory=False,  # Disable memory if you don't have an embedder set up
-            verbose=False),
+            verbose=False)
             result = crew.kickoff()
             st.success("Validation Complete!")
             st.markdown(result)  
