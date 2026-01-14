@@ -12,7 +12,7 @@ import time
 st.set_page_config(
     page_title="AI Startup Validator",
     page_icon="🚀",
-    initial_sidebar_state="collapsed",  # This hides the sidebar on load
+    initial_sidebar_state="collapsed",
     layout="centered"
 )
 
@@ -89,47 +89,122 @@ def duckduckgo_search(query: str) -> str:
     """Search the web for real-time signals."""
     return DuckDuckGoSearchRun().run(query)
 
-# SIMPLIFIED: Single all-in-one validator agent
-@st.cache_data(ttl=3600, show_spinner=False)  # Cache for 1 hour
+# ENHANCED: Single agent with comprehensive output
+@st.cache_data(ttl=3600, show_spinner=False)
 def run_single_agent_validation(idea_hash, idea_text, _llm):
-    """Single-agent validation - MUCH lower API usage"""
+    """Single-agent validation with comprehensive output"""
     
-    # ONE comprehensive agent instead of three
+    # Enhanced comprehensive agent
     validator = Agent(
-        role="Startup Idea Validator",
-        goal="Research 2026 market signals, score the idea 0-100, and generate a concise markdown report",
-        backstory="""You are an expert startup validator who excels at:
-        1) Finding real 2026 market signals from X/Reddit/HN
-        2) Objectively scoring ideas on demand, competition, timing, and feasibility
-        3) Writing clear, actionable markdown reports for non-technical founders
+        role="Expert Startup Idea Validator",
+        goal="Conduct thorough research of 2026 market signals, provide detailed scoring with evidence, and generate an actionable markdown report",
+        backstory="""You are a seasoned startup validator and market analyst with deep expertise in:
         
-        You ALWAYS use 2026 context and real current data. You are concise and practical.""",
+        - **Market Research**: Finding real, current signals from X/Twitter, Reddit, Hacker News, and industry publications
+        - **Competitive Analysis**: Identifying existing solutions and market gaps
+        - **Trend Analysis**: Understanding 2026 technology and consumer trends
+        - **Feasibility Assessment**: Evaluating technical and operational viability
+        - **Strategic Recommendations**: Providing specific, actionable next steps
+        
+        You produce comprehensive, evidence-based validation reports that non-technical founders can use to make informed decisions. 
+        You ALWAYS cite specific sources and include real 2026 data. You are thorough yet concise.""",
         tools=[duckduckgo_search],
         llm=_llm,
         verbose=False
     )
     
-    # ONE comprehensive task instead of three
+    # Enhanced comprehensive task with explicit structure
     validation_task = Task(
-        description=f"""Validate this startup idea: "{idea_text}"
+        description=f"""Conduct a comprehensive validation of this startup idea:
 
-Your complete validation should include:
+**IDEA**: "{idea_text}"
 
-1. **Market Signals (2026)**: Find 8-10 real quotes/signals from recent sources (X, Reddit, HN, news)
-2. **Scorecard**: Score 0-100 with breakdown:
-   - Market Demand (0-25)
-   - Competition Level (0-25) 
-   - Timing/Trends (0-25)
-   - Feasibility (0-25)
-3. **Recommendations**: 5-7 specific next steps
+You MUST produce a complete validation report with ALL of the following sections:
 
-Format as clean markdown. Keep under 800 words. Use ONLY 2026 dates/context.""",
-        expected_output="""A complete markdown validation report with:
-- Overall score (0-100)
-- Score breakdown with explanations
-- 8-10 market signals with sources
-- 5-7 actionable recommendations
-All in concise markdown format under 800 words.""",
+## 1. EXECUTIVE SUMMARY (2-3 sentences)
+- Brief overview of the idea and overall viability
+
+## 2. OVERALL SCORE: [X/100]
+Provide a single score from 0-100 with one-sentence justification.
+
+## 3. DETAILED SCORECARD
+Break down your score across four categories (each worth 25 points):
+
+**Market Demand (X/25)**
+- Current market size and growth
+- Evidence of customer pain points
+- Specific demand signals from 2026
+
+**Competition Level (X/25)**
+- Existing solutions and competitors
+- Market gaps and differentiation opportunities
+- Competitive landscape assessment
+
+**Timing/Trends (X/25)**
+- Alignment with 2026 technology trends
+- Market readiness and momentum
+- Regulatory and social factors
+
+**Feasibility (X/25)**
+- Technical implementation difficulty
+- Resource requirements
+- Operational challenges
+
+## 4. 2026 MARKET SIGNALS (8-10 signals minimum)
+Find and cite specific, recent signals. For each signal include:
+- **Quote or data point** (with source)
+- **Source**: Platform/publication and date
+- **Relevance**: Why this matters for the idea
+
+Search for signals on:
+- X/Twitter discussions and threads
+- Reddit posts (r/startups, r/technology, relevant subreddits)
+- Hacker News discussions
+- Industry news and reports
+- Product launches and funding announcements
+
+## 5. COMPETITIVE LANDSCAPE
+- List 3-5 existing competitors or similar solutions
+- Identify market gaps and differentiation opportunities
+- Assess competitive advantages
+
+## 6. KEY RISKS & CHALLENGES
+- List 3-5 major risks
+- Include mitigation strategies for each
+
+## 7. ACTIONABLE RECOMMENDATIONS (6-8 steps)
+Provide specific next steps prioritized by importance:
+1. Immediate actions (this week)
+2. Short-term goals (1-3 months)
+3. Medium-term milestones (3-6 months)
+
+Each recommendation should be specific and actionable.
+
+## 8. BOTTOM LINE
+- Final verdict: Go/No-Go/Pivot
+- One paragraph summary with key takeaway
+
+---
+
+**REQUIREMENTS**:
+- Use ONLY 2026 context and current dates
+- Cite specific sources for all signals
+- Be specific and evidence-based, not generic
+- Keep total length 1000-1500 words
+- Use proper markdown formatting
+- Include real data points and metrics where possible""",
+        expected_output="""A comprehensive markdown validation report containing:
+
+1. Executive Summary (2-3 sentences)
+2. Overall Score (0-100) with justification
+3. Detailed Scorecard (4 categories, 25 points each, with explanations)
+4. 8-10 Market Signals (with quotes, sources, dates, and relevance)
+5. Competitive Landscape (3-5 competitors, gaps, advantages)
+6. Key Risks & Challenges (3-5 risks with mitigation strategies)
+7. Actionable Recommendations (6-8 specific prioritized steps)
+8. Bottom Line (Go/No-Go/Pivot verdict with summary)
+
+Format: Clean markdown, 1000-1500 words, evidence-based, using only 2026 context.""",
         agent=validator
     )
     
@@ -211,13 +286,13 @@ if st.button("Validate Idea"):
     
     # Exponential backoff retry
     max_retries = 3
-    retry_delays = [10, 20, 40]  # Longer delays for single-agent approach
+    retry_delays = [10, 20, 40]
     
     for attempt in range(max_retries):
         try:
             with st.spinner(f"🔍 Validating your idea with 2026 market signals... (Attempt {attempt + 1}/{max_retries})"):
                 
-                # Single-agent validation (much faster!)
+                # Single-agent validation with enhanced prompts
                 result = run_single_agent_validation(idea_hash, idea, llm)
                 
                 # Success!
@@ -334,7 +409,7 @@ with st.sidebar:
     
     st.markdown("### 🔧 Current Setup")
     st.markdown(f"🎯 **Active**: {active_provider}")
-    st.markdown("⚡ **Mode**: Single-Agent (Optimized)")
+    st.markdown("⚡ **Mode**: Single-Agent (Enhanced)")
     
     st.markdown("---")
     
@@ -342,7 +417,7 @@ with st.sidebar:
     st.markdown("""
     - **Be specific** about your idea
     - **Mention target audience**
-    - **Keep under 150 words**
+    - **Keep under 200 words**
     - **Use off-peak hours**
     - **Avoid duplicate submissions**
     """)
