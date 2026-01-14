@@ -1,6 +1,5 @@
 import os
 import streamlit as st
-
 # Force the environment variable for the LiteLLM engine
 os.environ["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
 from crewai import Agent, Task, Crew, LLM
@@ -9,7 +8,7 @@ from langchain_community.tools import DuckDuckGoSearchRun
 
 # Groq LLM (free tier — fast, reliable, no local dependency)
 llm = LLM(
-    model="groq/llama3-8b-8192",  # Prefix added to specify Groq provider
+    model="groq/llama-3.1-8b-instant",  # ✅ Fixed - removed nested LLM()
     api_key=st.secrets["GROQ_API_KEY"],
     temperature=0.1,
 )
@@ -73,25 +72,24 @@ if st.button("Validate Idea"):
                 agent=writer,
                 context=[task2]
             )
-
-            crew = Crew(agents=[researcher, analyst, writer],
-                        tasks=[task1, task2, task3], 
-                        # If using planning, you MUST specify the planning_llm,
-                        # planning=True, 
-                        # planning_llm=your_groq_llm, 
-                        memory=False,  # Disable memory if you don't have an embedder set up
-                        verbose=False)
+            crew = Crew(
+                agents=[researcher, analyst, writer],
+                tasks=[task1, task2, task3], 
+                memory=False,
+                verbose=False
+            )
             result = crew.kickoff()
+            
             st.success("Validation Complete!")
             st.markdown(result)  
             st.download_button(
-            label="Download Report",
-            data=result,
-            file_name="validator_report.md",
-            mime="text/markdown"
+                label="Download Report",
+                data=result,
+                file_name="validator_report.md",
+                mime="text/markdown"
             )
     else:
-            st.warning("Please enter an idea to validate.")
+        st.warning("Please enter an idea to validate.")
 
 st.write("Beta by Mike Millard — AI Strategist & Team Enablement Coach")
 st.write("Building in public at The Future of Work Chronicles")
