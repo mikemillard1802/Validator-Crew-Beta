@@ -5,7 +5,7 @@ from langchain_community.tools import DuckDuckGoSearchRun
 
 # Groq LLM (free tier — fast, reliable, no local dependency)
 llm = LLM(
-    model="llama3-8b-8192",  # Fast & high-quality (free tier)
+    model="groq/llama3-8b-8192",  # Prefix added to specify Groq provider
     api_key=st.secrets["GROQ_API_KEY"],
     temperature=0.1,
 )
