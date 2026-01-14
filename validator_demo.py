@@ -44,19 +44,19 @@ def get_llm_with_fallback():
     """Try providers in order: Groq → OpenRouter → Hugging Face"""
     
     providers = [
-        {
-            "name": "Groq (Fast)",
-            "model": "groq/llama-3.1-8b-instant",
-            "api_key_name": "GROQ_API_KEY",
-            "priority": 1,
-            "params": {
-                "temperature": 0.3,  # Increased from 0.1 - allows more variety
-                "max_tokens": 2000,  # Set a reasonable limit
-                "top_p": 0.9,  # Nucleus sampling for better diversity
-                "frequency_penalty": 0.5,  # Penalize repetition
-                "presence_penalty": 0.3,  # Encourage new topics
-            }
-        },
+    {
+        "name": "Groq Llama 70B",
+        "model": "groq/llama-3.1-70b-versatile",  # Larger, smarter model
+        "api_key_name": "GROQ_API_KEY",
+        "priority": 1,
+        "params": {
+            "temperature": 0.3,
+            "max_tokens": 2000,
+            "top_p": 0.9,
+            "frequency_penalty": 0.5,
+            "presence_penalty": 0.3,
+        }
+    },
         {
             "name": "OpenRouter (Reliable)",
             "model": "openrouter/meta-llama/llama-3.1-8b-instruct:free",
