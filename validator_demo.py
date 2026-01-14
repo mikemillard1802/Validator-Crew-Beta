@@ -81,7 +81,7 @@ if st.button("Validate Idea"):
                         # planning_llm=your_groq_llm, 
                         memory=False,  # Disable memory if you don't have an embedder set up
                         verbose=False)
-                        result = crew.kickoff()
+            result = crew.kickoff()
             st.success("Validation Complete!")
             st.markdown(result)  
             st.download_button(
