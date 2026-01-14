@@ -70,7 +70,13 @@ if st.button("Validate Idea"):
                 context=[task2]
             )
 
-            crew = Crew(agents=[researcher, analyst, writer], tasks=[task1, task2, task3], verbose=False)
+            crew = Crew(agents=[researcher, analyst, writer], tasks=[task1, task2, task3], 
+            # If using planning, you MUST specify the planning_llm
+            # planning=True, 
+            # planning_llm=your_groq_llm, 
+            memory=False  # Disable memory if you don't have an embedder set up
+)
+            verbose=False)
             result = crew.kickoff()
 
         st.success("Validation Complete!")
