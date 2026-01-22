@@ -53,8 +53,6 @@ st.title("🚀 AI Startup Validator Crew Beta")
 st.write("For non-technical founders — de-risk your idea before building.")
 st.write("Current date context: 2026 — validation uses real-time signals.")
 
-st.info("🤖 Active Provider: Groq Llama 3.3 70B (cloud — no local Ollama)")
-
 idea = st.text_area("Describe your AI/startup idea", height=150, placeholder="e.g., An AI tool for personalized meal plans")
 
 if st.button("Validate Idea"):
