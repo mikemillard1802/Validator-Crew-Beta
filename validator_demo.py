@@ -73,8 +73,18 @@ if st.button("Validate Idea"):
                     context=[task1]
                 )
                 task3 = Task(
-                    description="Write clean markdown report: scorecard, signals list, 5-8 recommendations/next steps. Use only 2026 dates/context.",
-                    expected_output="Concise markdown report (800 words max)",
+                    description=f"""Write clean markdown report for idea: {idea}
+                    
+                    MUST include:
+                    - Executive Summary (3-5 sentences)
+                    - Overall Score X/100 with justification
+                    - Detailed Scorecard (Demand, Competition, Timing, Feasibility — 25 points each)
+                    - 10-15 2026 market signals/quotes with sources
+                    - 5-8 actionable recommendations
+                    - Bottom Line verdict
+                    
+                    1000-1500 words. Use ONLY 2026 context. Evidence-based.""",
+                    expected_output="Full markdown report",
                     agent=writer,
                     context=[task2]
                 )
@@ -82,22 +92,24 @@ if st.button("Validate Idea"):
                 crew = Crew(agents=[researcher, analyst, writer], tasks=[task1, task2, task3], verbose=False)
                 result = crew.kickoff()
 
+                # Fix binary error — convert to string
+                output_text = str(result)
+
                 st.success("Validation Complete!")
-                st.markdown(result)
+                st.markdown(output_text)
                 
                 st.download_button(
                     label="Download Report",
-                    data=result,
+                    data=output_text,
                     file_name="validator_report.md",
                     mime="text/markdown"
                 )
             except Exception as e:
-                st.error(f"Crew error: {str(e)}")
-                st.info("Tip: Try a simpler idea or refresh")
+                st.error("Crew encountered an issue — please try again")
     else:
         st.warning("Please enter an idea to validate.")
 
-# Expanded Sidebar (usage stats, tips)
+# Expanded Sidebar
 with st.sidebar:
     st.markdown("### 📊 Beta Usage Tips")
     st.markdown("**Runs per session**: Unlimited (cloud LLM)")
