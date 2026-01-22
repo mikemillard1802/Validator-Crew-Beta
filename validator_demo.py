@@ -12,7 +12,7 @@ for key in ["GROQ_API_KEY"]:
 
 # Cloud LLM (Groq — fast, reliable for public deploy)
 llm = LLM(
-    model="groq/llama-3.3-70b-versatile",  # High-quality, free tier eligible
+    model="groq/llama-3.3-70b-versatile",
     api_key=st.secrets["GROQ_API_KEY"],
     temperature=0.1,
 )
@@ -23,7 +23,7 @@ def duckduckgo_search(query: str) -> str:
     """Search the web for real-time signals."""
     return DuckDuckGoSearchRun().run(query)
 
-# Agents (defined here — fixes "not defined" error)
+# Agents
 researcher = Agent(
     role="Signal Scanner",
     goal="Find 10-15 real 2026 quotes/signals for the idea",
@@ -59,10 +59,6 @@ idea = st.text_area("Describe your AI/startup idea", height=150, placeholder="e.
 
 if st.button("Validate Idea"):
     if idea.strip():
-        # Realtime thinking visualization
-        placeholder = st.empty()
-        placeholder.markdown("### Crew Thinking...\nStarting validation...")
-
         with st.spinner("Crew validating (30-90 seconds)..."):
             try:
                 task1 = Task(
@@ -84,19 +80,14 @@ if st.button("Validate Idea"):
                 )
 
                 crew = Crew(agents=[researcher, analyst, writer], tasks=[task1, task2, task3], verbose=False)
-                
-                # Stream realtime thinking
-                full_output = ""
-                for chunk in crew.kickoff(stream=True):
-                    full_output += chunk
-                    placeholder.markdown(f"### Crew Thinking...\n{full_output}")
+                result = crew.kickoff()  # No stream=True (not supported)
 
                 st.success("Validation Complete!")
-                st.markdown(full_output)
+                st.markdown(result)
                 
                 st.download_button(
                     label="Download Report",
-                    data=full_output,
+                    data=result,
                     file_name="validator_report.md",
                     mime="text/markdown"
                 )
@@ -105,6 +96,25 @@ if st.button("Validate Idea"):
                 st.info("Tip: Try a simpler idea or refresh")
     else:
         st.warning("Please enter an idea to validate.")
+
+# Expanded Sidebar (usage stats, tips)
+with st.sidebar:
+    st.markdown("### 📊 Beta Usage Tips")
+    st.markdown("**Runs per session**: Unlimited (cloud LLM)")
+    st.markdown("**Best practices**:")
+    st.markdown("- Keep idea description <150 words")
+    st.markdown("- Specific target audience helps")
+    st.markdown("- Off-peak hours for faster response")
+    
+    st.markdown("---")
+    st.markdown("### 💡 Features")
+    st.markdown("- Real-time market signals")
+    - Scorecard 0-100
+    - Actionable recommendations
+    - Cloud-powered (Groq)
+    
+    st.markdown("---")
+    st.markdown("Feedback welcome — DM @mike51802 on X")
 
 st.write("Beta by Mike Millard — AI Strategist & Team Enablement Coach")
 st.write("Building in public at The Future of Work Chronicles")
