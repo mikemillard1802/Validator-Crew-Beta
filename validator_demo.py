@@ -260,8 +260,7 @@ if st.button("Validate Idea"):
                 st.info("Tip: Ollama running? Try simpler idea")
     else:
                 st.error("All providers exhausted — try later")
-                break
-
+            
 st.write("---")
 st.write("**Beta by Mike Millard** — AI Strategist & Team Enablement Coach")
 st.write("Building in public at The Future of Work Chronicles")
