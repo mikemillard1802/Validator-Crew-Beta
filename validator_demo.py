@@ -213,61 +213,52 @@ idea = st.text_area(
 )
 
 if st.button("Validate Idea"):
-    if not idea.strip():
-        st.warning("⚠️ Please enter an idea to validate.")
-        st.stop()
-   
-    if st.session_state.validation_count >= 3:
-        st.error("🛑 **Beta Limit Reached**: 3 validations per session")
-        st.info("Refresh the page or wait 10 minutes")
-        st.stop()
-   
-    cooldown_period = 300
-    if st.session_state.last_request_time:
-        time_elapsed = (datetime.now() - st.session_state.last_request_time).seconds
-        if time_elapsed < cooldown_period:
-            remaining = cooldown_period - time_elapsed
-            minutes = remaining // 60
-            seconds = remaining % 60
-            st.warning(f"⏳ Cooldown: {minutes}m {seconds}s")
-            st.stop()
-   
-    st.session_state.last_request_time = datetime.now()
-    st.session_state.validation_count += 1
-   
-    idea_hash = hashlib.md5(idea.strip().lower().encode()).hexdigest()
-   
-    max_retries = 3
-    retry_delays = [10, 20, 40]
-   
-    for attempt in range(max_retries):
-        try:
-            with st.spinner(f"Validating... (Attempt {attempt + 1}/{max_retries})"):
-                result = run_single_agent_validation(idea_hash, idea, llm)
-               
-            st.success("Validation Complete!")
-            st.markdown("---")
-            st.markdown(result)
-            st.markdown("---")
-               
-            st.download_button(
-                label="📥 Download Report",
-                data=str(result),
-                file_name=f"validator_report_{datetime.now().strftime('%Y-%m-%d')}.md",
-                mime="text/markdown"
-            )
-            break
-               
-        except Exception as e:
-            if attempt < max_retries - 1:
-                delay = retry_delays[attempt]
-                st.warning(f"Rate limit — waiting {delay}s")
-                progress_bar = st.progress(0)
-                for i in range(delay):
-                    time.sleep(1)
-                    progress_bar.progress((i + 1) / delay)
-                progress_bar.empty()
-            else:
+    if idea.strip():
+        # Realtime thinking visualization
+        placeholder = st.empty()
+        placeholder.markdown("### Crew Thinking...\nStarting validation...")
+
+        with st.spinner("Crew validating (30-90 seconds)..."):
+            try:
+                task1 = Task(
+                    description=f"Scan 2026 real-time signals (X/Reddit/HN) for: {idea}",
+                    expected_output="10-15 quotes/signals with sources",
+                    agent=researcher
+                )
+                task2 = Task(
+                    description="Generate scorecard 0-100 with breakdown (demand, competition, timing, feasibility) using 2026 context",
+                    expected_output="Scorecard with overall score and explanations",
+                    agent=analyst,
+                    context=[task1]
+                )
+                task3 = Task(
+                    description="Write clean markdown report: scorecard, signals list, 5-8 recommendations/next steps. Use only 2026 dates/context.",
+                    expected_output="Concise markdown report (800 words max)",
+                    agent=writer,
+                    context=[task2]
+                )
+
+                crew = Crew(agents=[researcher, analyst, writer], tasks=[task1, task2, task3], verbose=False)
+                
+                # Stream realtime thinking
+                full_output = ""
+                for chunk in crew.kickoff(stream=True):  # Streaming mode
+                    full_output += chunk
+                    placeholder.markdown(f"### Crew Thinking...\n{full_output}")
+
+                st.success("Validation Complete!")
+                st.markdown(full_output)  # Final full report
+                
+                st.download_button(
+                    label="Download Report",
+                    data=full_output,
+                    file_name="validator_report.md",
+                    mime="text/markdown"
+                )
+            except Exception as e:
+                st.error(f"Crew error: {str(e)}")
+                st.info("Tip: Ollama running? Try simpler idea")
+    else::
                 st.error("All providers exhausted — try later")
                 break
 
