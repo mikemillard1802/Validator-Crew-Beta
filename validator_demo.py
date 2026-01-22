@@ -258,7 +258,7 @@ if st.button("Validate Idea"):
             except Exception as e:
                 st.error(f"Crew error: {str(e)}")
                 st.info("Tip: Ollama running? Try simpler idea")
-    else::
+    else:
                 st.error("All providers exhausted — try later")
                 break
 
