@@ -80,7 +80,7 @@ if st.button("Validate Idea"):
                 )
 
                 crew = Crew(agents=[researcher, analyst, writer], tasks=[task1, task2, task3], verbose=False)
-                result = crew.kickoff()  # No stream=True (not supported)
+                result = crew.kickoff()
 
                 st.success("Validation Complete!")
                 st.markdown(result)
@@ -109,9 +109,9 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### 💡 Features")
     st.markdown("- Real-time market signals")
-    - Scorecard 0-100
-    - Actionable recommendations
-    - Cloud-powered (Groq)
+    st.markdown("- Scorecard 0-100")
+    st.markdown("- Actionable recommendations")
+    st.markdown("- Cloud-powered (Groq)")
     
     st.markdown("---")
     st.markdown("Feedback welcome — DM @mike51802 on X")
