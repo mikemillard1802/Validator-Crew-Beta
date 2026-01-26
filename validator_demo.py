@@ -5,6 +5,13 @@ from langchain_community.tools import DuckDuckGoSearchRun
 from datetime import datetime
 import os
 
+# 1. SET PAGE CONFIG (Must be the very first Streamlit command)
+st.set_page_config(
+    page_title="AI Startup Validator",
+    page_icon="🚀",
+    initial_sidebar_state="collapsed"
+)
+
 # Set API keys from secrets (cloud LLM only)
 for key in ["GROQ_API_KEY"]:
     if key in st.secrets:
@@ -49,12 +56,15 @@ writer = Agent(
     verbose=False
 )
 
+# MAIN UI
+# 2. ADD TEXT BY CHEVRON (Instructional caption at the top of the main area)
+st.caption("⬅️ Open to View Sidebar (Usage Tips & Features)")
+
 st.title("🚀 AI Startup Validator Crew Beta")
 st.write("For non-technical founders — de-risk your idea before building.")
 st.write("Current date context: 2026 — validation uses real-time signals.")
 
 st.info("🤖 Active Provider: Groq Llama 3.3 70B ")
-
 
 idea = st.text_area("Describe your AI/startup idea", height=150, placeholder="e.g., An AI tool for personalized meal plans")
 
@@ -93,7 +103,6 @@ if st.button("Validate Idea"):
                 crew = Crew(agents=[researcher, analyst, writer], tasks=[task1, task2, task3], verbose=False)
                 result = crew.kickoff()
 
-                # Fix binary error — convert to string
                 output_text = str(result)
 
                 st.success("Validation Complete!")
@@ -110,8 +119,10 @@ if st.button("Validate Idea"):
     else:
         st.warning("Please enter an idea to validate.")
 
-# Expanded Sidebar
+# SIDEBAR CONTENT
 with st.sidebar:
+    # 3. ADD CONFIRMATION TEXT INSIDE SIDEBAR
+    st.success("✅ Sidebar Open")
     st.markdown("### 📊 Beta Usage Tips")
     st.markdown("**Runs per session**: Unlimited (cloud LLM)")
     st.markdown("**Best practices**:")
@@ -129,5 +140,6 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("Feedback welcome — DM @mike51802 on X")
 
+st.divider()
 st.write("Beta by Mike Millard — AI Strategist & Team Enablement Coach")
-st.write("Building in public at The Future of Work Chronicles")
+st.write("Building in public at [The Future of Work Chronicles](https://futureofworkchronicles.com)")
