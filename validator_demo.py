@@ -142,4 +142,4 @@ with st.sidebar:
 
 st.divider()
 st.write("Beta by Mike Millard — AI Strategist & Team Enablement Coach")
-st.write("Building in public at [The Future of Work Chronicles](https://futureofworkchronicles.com)")
+st.write("Building in public at [The Future of Work Chronicles](https://the-future-of-work-chronicles.blogspot.com/)")
