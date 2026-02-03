@@ -7,7 +7,7 @@ import os
 
 # 1. SET PAGE CONFIG (Must be the very first Streamlit command)
 st.set_page_config(
-    page_title="AI Startup Validator",
+    page_title="AI Startup or Case Study Idea Validator",
     page_icon="🚀",
     initial_sidebar_state="collapsed"
 )
@@ -60,7 +60,7 @@ writer = Agent(
 # 2. ADD TEXT BY CHEVRON (Instructional caption at the top of the main area)
 st.caption("⬅️ Open to View Sidebar (Usage Tips & Features)")
 
-st.title("🚀 AI Startup Validator Crew Beta")
+st.title("🚀 AI Startup or Case Study Idea Validator Crew Beta")
 st.write("For non-technical founders — de-risk your idea before building.")
 st.write("Current date context: 2026 — validation uses real-time signals.")
 
