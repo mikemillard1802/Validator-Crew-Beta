@@ -141,5 +141,5 @@ with st.sidebar:
     st.markdown("Feedback welcome — DM @mike51802 on X")
 
 st.divider()
-st.write("Beta by Mike Millard — AI Strategist & Team Enablement Coach")
+st.write("Beta by Mike Millard — AI Strategist-Team Enablement Coach and Founder eXpodite-AI Building the workforce of Tomorrow Today")
 st.write("Building in public at [The Future of Work Chronicles](https://the-future-of-work-chronicles.blogspot.com/)")
