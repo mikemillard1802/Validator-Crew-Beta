@@ -1,3 +1,7 @@
+Streamlit Idea Validator App:
+
+...................
+
 import streamlit as st
 from crewai import Agent, Task, Crew, LLM
 from crewai.tools import tool
@@ -16,16 +20,18 @@ for key in ["GROQ_API_KEY"]:
     if key in st.secrets:
         os.environ[key] = st.secrets[key]
 
+# Disable LiteLLM prompt caching — Groq does not support cache_breakpoint
+os.environ["LITELLM_CACHE"] = "False"
+
 # Cloud LLM (Groq)
 llm = LLM(
     model="groq/llama-3.3-70b-versatile",
     api_key=st.secrets["GROQ_API_KEY"],
     temperature=0.1,
+    cache=False,   # prevents LiteLLM injecting cache_breakpoint into messages
 )
 
-# --- FIXED: Replaced DuckDuckGoSearchRun with direct HTTP call ---
-# DuckDuckGoSearchRun from langchain_community frequently hangs on Streamlit Cloud.
-# This lightweight version calls the DuckDuckGo HTML endpoint directly with a timeout.
+# --- Lightweight DuckDuckGo search (no langchain dependency) ---
 @tool("DuckDuckGo Search")
 def duckduckgo_search(query: str) -> str:
     """Search the web for real-time market signals."""
@@ -36,7 +42,7 @@ def duckduckgo_search(query: str) -> str:
             "https://html.duckduckgo.com/html/",
             params=params,
             headers=headers,
-            timeout=10  # hard timeout prevents infinite spinner
+            timeout=10
         )
         if resp.status_code != 200:
             return f"Search unavailable (HTTP {resp.status_code}). Use general knowledge."
@@ -143,7 +149,6 @@ if st.button("Validate Idea"):
                     agent=analyst,
                     context=[task1]
                 )
-                # FIXED: context now includes task1 AND task2 so writer sees everything
                 task3 = Task(
                     description=f"""Write clean markdown report for idea: {idea}
 
@@ -197,14 +202,12 @@ with st.sidebar:
     st.markdown("- Keep idea description <150 words")
     st.markdown("- Specific target audience helps")
     st.markdown("- Off-peak hours for faster response")
-
     st.markdown("---")
     st.markdown("### 💡 Features")
     st.markdown("- Real-time market signals")
     st.markdown("- Scorecard 0-100")
     st.markdown("- Actionable recommendations")
     st.markdown("- Cloud-powered (Groq)")
-
     st.markdown("---")
     st.markdown("Feedback welcome — DM @mike51802 on X")
 
