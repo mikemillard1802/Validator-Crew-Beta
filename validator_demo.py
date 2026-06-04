@@ -24,7 +24,6 @@ llm = LLM(
     model="groq/llama-3.3-70b-versatile",
     api_key=st.secrets["GROQ_API_KEY"],
     temperature=0.1,
-    cache=False,   # prevents LiteLLM injecting cache_breakpoint into messages
 )
 
 # --- Lightweight DuckDuckGo search (no langchain dependency) ---
