@@ -3,6 +3,7 @@ from crewai import Agent, Task, Crew, LLM
 from crewai.tools import tool
 import requests
 import os
+import litellm
 
 # 1. SET PAGE CONFIG (Must be the very first Streamlit command)
 st.set_page_config(
@@ -11,12 +12,32 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# Patch LiteLLM to strip cache_breakpoint — Groq rejects it
+litellm.cache = None
+litellm.enable_cache = False
+litellm.disable_cache = True
+
+original_completion = litellm.completion
+
+def patched_completion(*args, **kwargs):
+    messages = kwargs.get("messages", [])
+    for msg in messages:
+        if isinstance(msg, dict):
+            msg.pop("cache_breakpoint", None)
+            if isinstance(msg.get("content"), list):
+                for block in msg["content"]:
+                    if isinstance(block, dict):
+                        block.pop("cache_breakpoint", None)
+    kwargs["messages"] = messages
+    return original_completion(*args, **kwargs)
+
+litellm.completion = patched_completion
+
 # Set API keys from secrets
 for key in ["GROQ_API_KEY"]:
     if key in st.secrets:
         os.environ[key] = st.secrets[key]
 
-# Disable LiteLLM prompt caching — Groq does not support cache_breakpoint
 os.environ["LITELLM_CACHE"] = "False"
 
 # Cloud LLM (Groq)
@@ -26,7 +47,7 @@ llm = LLM(
     temperature=0.1,
 )
 
-# --- Lightweight DuckDuckGo search (no langchain dependency) ---
+# --- Lightweight DuckDuckGo search ---
 @tool("DuckDuckGo Search")
 def duckduckgo_search(query: str) -> str:
     """Search the web for real-time market signals."""
