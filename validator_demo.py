@@ -42,7 +42,7 @@ os.environ["LITELLM_CACHE"] = "False"
 
 # Cloud LLM (Groq)
 llm = LLM(
-    model="Agentic AI Security Evaluator",
+    model="groq/openai/gpt-oss-120b",
     api_key=st.secrets["GROQ_API_KEY"],
     temperature=0.1,
 )
